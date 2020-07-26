@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import Post from './components/Post';
-import { db } from './firebase.js'
+import { db, auth } from './firebase.js'
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import { Button, Input } from '@material-ui/core';
@@ -38,6 +38,36 @@ function App() {
   const [ username, setUsername ] = useState('')
   const [ email, setEmail ] = useState('');
   const [ password, setPassword ] = useState('');
+  const [ user, setUser ] = useState(null);
+
+  useEffect(() => {
+    //gonna listen any single time the authentication change happens(login or logout)
+    const unsubscribe = auth.onAuthStateChanged((authUser) => {
+      if(authUser){
+        //user has logged in
+        //it will survive the refresh
+        console.log(authUser);
+        setUser(authUser);
+
+        // if(authUser.displayName){
+        //   //dont update username
+        // }else{
+        //   //if we just created someone, go to the authUser we login with and update the username
+        //   return authUser.updateProfile({
+        //     displayName: username
+        //   })
+        // }
+      }else{
+        //user has logged out
+        setUser(null)
+      }
+    })
+
+    return () => {
+      //perfom some cleanup action
+      unsubscribe();
+    }
+  }, [user, username]);
 
   //useEffect->runs a piece of code based on specific condition
   useEffect(() => {
@@ -53,7 +83,13 @@ function App() {
 
   const onSignUp = (e) => {
     e.preventDefault();
-    console.log({username, email, password})
+    auth.createUserWithEmailAndPassword(email, password)
+      .then((authUser) => {
+        return authUser.user.updateProfile({
+          displayName: username
+        })
+      })
+      .catch((error) => alert(error.message))
   }
 
 
@@ -88,6 +124,7 @@ function App() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            
             <Button type='submit' onClick={onSignUp}>Sign Up</Button>
           </form>
         </div>
@@ -100,7 +137,16 @@ function App() {
         />
       </header>
 
-      <Button onClick={() => setOpen(true)}>Sign Up</Button>
+      {
+        user ? (
+          <Button onClick={() => auth.signOut()}>Log Out</Button>
+        ) : (
+          <div className="app__loginContainer">
+            <Button onClick={() => setOpen(true)}>Sign Up</Button>
+          </div>
+        )
+      }
+
 
       {
         posts.map( ({id, post}) => (
