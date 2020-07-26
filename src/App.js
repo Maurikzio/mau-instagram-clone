@@ -35,6 +35,7 @@ function App() {
 
   const [ posts, setPosts ] = useState([]);
   const [ open, setOpen ] = useState(false);
+  const [ openSignIn, setOpenSignIn] = useState(false)
   const [ username, setUsername ] = useState('')
   const [ email, setEmail ] = useState('');
   const [ password, setPassword ] = useState('');
@@ -83,6 +84,7 @@ function App() {
 
   const onSignUp = (e) => {
     e.preventDefault();
+
     auth.createUserWithEmailAndPassword(email, password)
       .then((authUser) => {
         return authUser.user.updateProfile({
@@ -90,8 +92,19 @@ function App() {
         })
       })
       .catch((error) => alert(error.message))
+
+      setOpen(false)
   }
 
+  const onSignIn = (e) => {
+    e.preventDefault();
+
+    auth.signInWithEmailAndPassword(email, password)
+      .catch((error) => alert(error))
+
+    setOpenSignIn(false);
+    
+  }
 
   return (
     <div className="app">
@@ -130,6 +143,35 @@ function App() {
         </div>
       </Modal>
 
+      {/* login modal */}
+      <Modal open={openSignIn} onClose={() => setOpenSignIn(false)}>
+        <div style={modalStyle} className={classes.paper}>
+          <center>
+            <img 
+            src='https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png'
+            alt='logo'
+          />
+          </center>
+
+          <form className='app__signupForm'>
+            <Input
+              placeholder='email'
+              type='email'
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <Input
+              placeholder='password'
+              type='password'
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            
+            <Button type='submit' onClick={onSignIn}>Sign In</Button>
+          </form>
+        </div>
+      </Modal>
+
       <header className="app__header">
         <img 
           src='https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png'
@@ -142,6 +184,7 @@ function App() {
           <Button onClick={() => auth.signOut()}>Log Out</Button>
         ) : (
           <div className="app__loginContainer">
+            <Button onClick={() => setOpenSignIn(true)}>Sign In</Button>
             <Button onClick={() => setOpen(true)}>Sign Up</Button>
           </div>
         )
