@@ -110,13 +110,6 @@ function App() {
 
   return (
     <div className="app">
-      {//optional chaining
-        user?.displayName ? (
-          <PostUpload username={user.displayName}/>
-        ) : (
-          <h3>Srry you need to log in to upload..</h3>
-        )
-      }
 
       <Modal open={open} onClose={() => setOpen(false)}>
         <div style={modalStyle} className={classes.paper}>
@@ -186,24 +179,32 @@ function App() {
           src='https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png'
           alt='logo'
         />
+        <div>
+          {
+            user ? (
+              <Button onClick={() => auth.signOut()}>Log Out</Button>
+            ) : (
+              <div className="app__loginContainer">
+                <Button onClick={() => setOpenSignIn(true)}>Sign In</Button>
+                <Button onClick={() => setOpen(true)}>Sign Up</Button>
+              </div>
+            )
+          }
+        </div>
       </header>
-
-      {
-        user ? (
-          <Button onClick={() => auth.signOut()}>Log Out</Button>
-        ) : (
-          <div className="app__loginContainer">
-            <Button onClick={() => setOpenSignIn(true)}>Sign In</Button>
-            <Button onClick={() => setOpen(true)}>Sign Up</Button>
-          </div>
-        )
-      }
-
 
       {
         posts.map( ({id, post}) => (
           <Post key={id} username={post.username} caption={post.caption} imageUrl={post.imageUrl} />
         ))
+      }
+
+      {//optional chaining
+        user?.displayName ? (
+          <PostUpload username={user.displayName}/>
+        ) : (
+          <h3>Srry you need to log in to upload..</h3>
+        )
       }
 
     </div>
