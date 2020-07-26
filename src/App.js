@@ -5,6 +5,7 @@ import { db, auth } from './firebase.js'
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import { Button, Input } from '@material-ui/core';
+import PostUpload from './components/PostUpload';
 
 
 function getModalStyle() {
@@ -74,7 +75,7 @@ function App() {
   useEffect(() => {
     //this is where the code runs, the condition will be in the array
     //onSnapshot is a listener that will run avery time the db changes
-    db.collection('posts').onSnapshot(snapshot => {
+    db.collection('posts').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
       setPosts(snapshot.docs.map( doc =>  ({
         id: doc.id,
         post: doc.data()
@@ -106,8 +107,16 @@ function App() {
     
   }
 
+
   return (
     <div className="app">
+      {//optional chaining
+        user?.displayName ? (
+          <PostUpload username={user.displayName}/>
+        ) : (
+          <h3>Srry you need to log in to upload..</h3>
+        )
+      }
 
       <Modal open={open} onClose={() => setOpen(false)}>
         <div style={modalStyle} className={classes.paper}>
