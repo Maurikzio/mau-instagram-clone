@@ -2,11 +2,42 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import Post from './components/Post';
 import { db } from './firebase.js'
+import { makeStyles } from '@material-ui/core/styles';
+import Modal from '@material-ui/core/Modal';
+import { Button, Input } from '@material-ui/core';
 
 
+function getModalStyle() {
+  const top = 50;
+  const left = 50;
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
+
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    position: 'absolute',
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
+}));
 
 function App() {
-   const [ posts, setPosts ] = useState([]);
+  const classes = useStyles();
+  const [modalStyle] = useState(getModalStyle);
+
+  const [ posts, setPosts ] = useState([]);
+  const [ open, setOpen ] = useState(false);
+  const [ username, setUsername ] = useState('')
+  const [ email, setEmail ] = useState('');
+  const [ password, setPassword ] = useState('');
 
   //useEffect->runs a piece of code based on specific condition
   useEffect(() => {
@@ -18,18 +49,59 @@ function App() {
         post: doc.data()
       })))
     })
-  }, [])
-  
-  console.log(posts);
+  }, []);
+
+  const onSignUp = (e) => {
+    e.preventDefault();
+    console.log({username, email, password})
+  }
+
 
   return (
     <div className="app">
+
+      <Modal open={open} onClose={() => setOpen(false)}>
+        <div style={modalStyle} className={classes.paper}>
+          <center>
+            <img 
+            src='https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png'
+            alt='logo'
+          />
+          </center>
+
+          <form className='app__signupForm'>
+            <Input
+                placeholder='username'
+                type='text'
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+            />
+            <Input
+              placeholder='email'
+              type='email'
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <Input
+              placeholder='password'
+              type='password'
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <Button type='submit' onClick={onSignUp}>Sign Up</Button>
+          </form>
+        </div>
+      </Modal>
+
       <header className="app__header">
         <img 
           src='https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png'
           alt='logo'
         />
       </header>
+
+      <Button onClick={() => setOpen(true)}>Sign Up</Button>
+
       {
         posts.map( ({id, post}) => (
           <Post key={id} username={post.username} caption={post.caption} imageUrl={post.imageUrl} />

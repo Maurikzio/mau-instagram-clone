@@ -13,3 +13,8 @@
   object-fit: contain;
   padding: 20px;
 }
+
+.app__signupForm{
+    display: flex;
+    flex-direction: column;
+}
