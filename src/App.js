@@ -6,18 +6,6 @@ import { db } from './firebase.js'
 
 
 function App() {
-  // const [ posts, setPosts ] = useState([
-  //   {
-  //     username: 'aaaaa',
-  //     caption: 'I am aaaaa',
-  //     imageUrl: 'https://reactjs.org/logo-og.png'
-  //   },
-  //   {
-  //     username: 'eeeee',
-  //     caption: 'I am eeeee',
-  //     imageUrl: 'https://reactjs.org/logo-og.png'
-  //   },
-  // ]);
    const [ posts, setPosts ] = useState([]);
 
   //useEffect->runs a piece of code based on specific condition
@@ -25,7 +13,10 @@ function App() {
     //this is where the code runs, the condition will be in the array
     //onSnapshot is a listener that will run avery time the db changes
     db.collection('posts').onSnapshot(snapshot => {
-      setPosts(snapshot.docs.map( doc => doc.data()))
+      setPosts(snapshot.docs.map( doc =>  ({
+        id: doc.id,
+        post: doc.data()
+      })))
     })
   }, [])
   
@@ -40,8 +31,8 @@ function App() {
         />
       </header>
       {
-        posts.map( (post, index) => (
-          <Post key={index} username={post.username} caption={post.caption} imageUrl={post.imageUrl} />
+        posts.map( ({id, post}) => (
+          <Post key={id} username={post.username} caption={post.caption} imageUrl={post.imageUrl} />
         ))
       }
 
