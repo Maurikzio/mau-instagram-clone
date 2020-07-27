@@ -1,9 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './post-styles.css';
 import Avatar from  '@material-ui/core/Avatar';
+import { db } from '../firebase'
+import firebase from 'firebase';
 
-const Post = ({ username, caption, imageUrl}) => {
+
+const Post = ({ postId, user, username, caption, imageUrl}) => {
     const [ comments, setComments ] = useState([]);
+    const [ comment, setComment ] = useState('');
+
+    useEffect(() => {
+        let unsubscribe;
+        if(postId){
+            unsubscribe = db
+                .collection('posts') //accesing the post colleciton
+                .doc(postId) //go the this postId document
+                .collection('comments') //go inside of the comments collection  that is inside
+                .orderBy('timestamp', 'desc')
+                .onSnapshot((snapshot) => { //and get a napshot listener for that
+                    setComments(snapshot.docs.map((doc) => doc.data()));
+                })
+        }
+        return () => {
+            unsubscribe();
+        }
+    }, [postId]) 
+
+    const postComment = (e) => {
+        e.preventDefault();
+        db.collection('posts').doc(postId).collection('comments').add({
+            text: comment,
+            username: user.displayName,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        setComment('');
+    }
+
     return (
         <div className='post'>
             {/* heeader -> avatar + username */}
@@ -20,7 +52,38 @@ const Post = ({ username, caption, imageUrl}) => {
             <img className='post__image' src={imageUrl}/>
 
             {/* username + caption */}
-            <h4 className='post__text'> <strong>{username}:</strong> {caption}</h4>
+            <h4 className='post__text'> <strong>{username} </strong> {caption}</h4>
+
+            <div className='post__comments'>
+                {
+                    comments.map((comment) => (
+                        <p>
+                            <strong>{comment.username} </strong> {comment.text}
+                        </p>
+                    ))
+                }
+            </div>
+
+            { user && (
+                <form className='post__commentBox'>
+                    <input
+                        className='post__input'
+                        type='text'
+                        placeholder='Add a comment...'
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                    />
+                    <button
+                        className='post__button'
+                        disabled={!comment}
+                        type='submit'
+                        onClick={postComment}
+                    >
+                    Post
+                    </button>
+                </form>
+            )}
+            
         </div>
     )
 }

@@ -25,5 +25,45 @@
 
 .post__text{
     font-weight: normal;
+    padding: 10px 20px;
+    /* background-color: orange; */
+}
+
+.post__comments{
     padding: 20px;
+    /* background-color: orange; */
+}
+.post__commentBox{
+    display: flex;
+    margin-top: 10px;
+}
+.post__input{
+    flex: 1;
+    padding: 20px;
+    border: none;
+    border-top: 1px solid lightgray;
+    font-size: 15px;
+}
+.post__input:focus{
+    outline: none;
+}
+
+.post__button{
+    flex: 0;
+    color: rgba(0, 149, 246, 1);
+    font-weight: bolder;
+    background-color: transparent;
+    border: none;
+    border-top: 1px solid lightgray;
+    padding: 0 20px;
+}
+.post__button:hover{
+    cursor: pointer;
+}
+
+.post__button:disabled{
+    color: rgba(0, 149, 246, .5);
+}
+.post__button:disabled:hover{
+    cursor: default;
 }
