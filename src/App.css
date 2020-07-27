@@ -20,7 +20,21 @@
 }
 
 .app__headerImage{
+  /* flex: 1; */
   object-fit: contain;
+}
+
+.app__addPostBtn{
+  background-color: transparent;
+  font-size: 30px;
+  padding: 0 8px;
+  border-radius: 10px;
+}
+.app__addPostBtn:focus{
+  outline: none;
+}
+.app__addPostBtn:hover{
+  cursor: pointer;
 }
 
 .app__signupForm{
@@ -37,3 +51,4 @@
 .app__postsRight{
   margin-left: 20px;
 }
+

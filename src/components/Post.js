@@ -56,8 +56,8 @@ const Post = ({ postId, user, username, caption, imageUrl}) => {
 
             <div className='post__comments'>
                 {
-                    comments.map((comment) => (
-                        <p>
+                    comments.map((comment, index) => (
+                        <p key={index}>
                             <strong>{comment.username} </strong> {comment.text}
                         </p>
                     ))

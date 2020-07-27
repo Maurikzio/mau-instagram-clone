@@ -5,7 +5,7 @@ import firebase from 'firebase';
 
 import './postUpload-styles.css';
 
-const PostUpload = ({ username }) => {
+const PostUpload = ({ username, setAddPost }) => {
     const [ caption, setCaption ] = useState('');
     // const [ url, setUrl ] = useState('');
     const [ progress, setProgress ] = useState(0);
@@ -52,6 +52,7 @@ const PostUpload = ({ username }) => {
                         setProgress(0);
                         setCaption('');
                         setImage(null);
+                        setAddPost(false);
                     })
             }
         )

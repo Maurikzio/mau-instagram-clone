@@ -42,6 +42,7 @@ function App() {
   const [ email, setEmail ] = useState('');
   const [ password, setPassword ] = useState('');
   const [ user, setUser ] = useState(null);
+  const [ addPost, setAddPost ] = useState(false)
 
   useEffect(() => {
     //gonna listen any single time the authentication change happens(login or logout)
@@ -49,7 +50,7 @@ function App() {
       if(authUser){
         //user has logged in
         //it will survive the refresh
-        console.log(authUser);
+        // console.log(authUser);
         setUser(authUser);
 
         // if(authUser.displayName){
@@ -175,13 +176,35 @@ function App() {
         </div>
       </Modal>
 
+      <Modal open={addPost} onClose={() => setAddPost(false)}>
+        {/* {//optional chaining
+            user?.displayName ? (
+            <PostUpload username={user.displayName}/>
+          ) : (
+            <h3>Srry you need to log in to upload..</h3>
+          )
+        } */}
+        <div style={modalStyle} className={classes.paper}>
+          {//optional chaining
+              user?.displayName ? (
+              <PostUpload username={user.displayName}/>
+            ) : (
+              <h3>Srry you need to log in to upload..</h3>
+            )
+          } 
+        </div>
+      </Modal>
+
       <header className="app__header">
         <img 
           className='app__headerImage'
           src='https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png'
           alt='logo'
         />
-        <div>
+        <div className='app__headerAddPost'>
+          <button className='app__addPostBtn' disabled={addPost} onClick={() => setAddPost(true)} >+</button>
+        </div>
+        <div className='app__headerAuthBtns'>
           {
             user ? (
               <Button onClick={() => auth.signOut()}>Log Out</Button>
@@ -219,18 +242,7 @@ function App() {
               onFailure={() => {}}
             />
           </div>
-        
       </div>
-      
-
-      {//optional chaining
-        user?.displayName ? (
-          <PostUpload username={user.displayName}/>
-        ) : (
-          <h3>Srry you need to log in to upload..</h3>
-        )
-      }
-
     </div>
   );
 }
