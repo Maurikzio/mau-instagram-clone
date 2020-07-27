@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './post-styles.css';
 import Avatar from  '@material-ui/core/Avatar';
 
 const Post = ({ username, caption, imageUrl}) => {
+    const [ comments, setComments ] = useState([]);
     return (
         <div className='post'>
             {/* heeader -> avatar + username */}
             <div className='post__header'>
                 <Avatar
-                    className='post__avatar'
+                    className='post__avatar' 
                     alt= {username.toUpperCase()}
                     src='/static/images/avatar/1.jpg'
                 />
